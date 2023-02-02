@@ -18,3 +18,7 @@ interface UserModel {
   created_at: string
   updated_at: string
 }
+interface CategoryModel {
+  id: number,
+  title: string
+}
