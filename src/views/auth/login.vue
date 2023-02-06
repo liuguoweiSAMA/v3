@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import useStorage from '@/composables/hd/useStorage'
 import useUtil from '@/composables/hd/useUtil'
-import { CacheKey } from '@/enum/CacheKey'
-import { Wechat } from '@icon-park/vue-next'
 import { ElMessage } from 'element-plus'
+import {login} from '@/api/login'
+import useAuth from '@/composables/useAuth'
 import { reactive } from 'vue'
-import Footer from './components/footer.vue'
-const storage = useStorage()
+const { loginCallback,isLogin } = useAuth()
+// import { loginCallback } from '@/composables/useAuth'
 const { request } = useUtil()
-const form = reactive({ mobile: '19999999999', password: 'admin888' })
-
+const form = reactive({ name: 'admin', password: 'admin' })
 //请自行完善逻辑
 const onSubmit = request(async () => {
-  if (!form.mobile || !form.password) return ElMessage.error('帐号和密码不能为空')
-  storage.set(CacheKey.TOKEN_NAME, 'houdunren.com')
-  location.href = '/'
+  if (!form.name || !form.password) return ElMessage.error('帐号和密码不能为空')
+  const {data} = await login(form)
+  // console.log(data)
+  loginCallback(data.token)
+  if(isLogin()) location.href = '/'
 })
 </script>
 
@@ -25,7 +25,7 @@ const onSubmit = request(async () => {
         <div>
           <h2 class="text-center text-gray-700 text-lg mt-3">用户登录</h2>
           <div class="mt-8">
-            <HdFormInput v-model="form.mobile" placeholder="请输入手机号" />
+            <HdFormInput v-model="form.name" placeholder="请输入手机号" />
             <HdError name="mobile" />
             <HdFormInput
               v-model="form.password"
@@ -36,15 +36,7 @@ const onSubmit = request(async () => {
             <HdError name="password" />
           </div>
           <HdFormButton class="w-full mt-3 primary">登录</HdFormButton>
-          <div class="flex justify-center mt-3">
-            <wechat
-              theme="outline"
-              size="24"
-              fill="#fff"
-              class="fab fa-weixin bg-green-600 text-white rounded-full p-1 cursor-pointer" />
-          </div>
         </div>
-        <Footer />
       </div>
       <div class="hidden md:block relative">
         <img src="/images/login.jpg" class="absolute h-full w-full object-cover" />

@@ -14,7 +14,10 @@ export default () => {
   function isAdministrator() {
     return userStore().user?.id == 1
   }
-
+  function loginCallback(token: string) {
+    // console.log(token)
+    useStorage().set(CacheKey.TOKEN_NAME, token)
+  }
   //登录检测
   function isLogin(): boolean {
     return useStorage().get(CacheKey.TOKEN_NAME)
@@ -26,12 +29,7 @@ export default () => {
   async function logout() {
     storage.remove(CacheKey.TOKEN_NAME)
     return (location.href = '/')
-    await http.request({
-      url: `auth/logout`,
-      method: 'POST',
-    })
-    location.href = '/'
   }
 
-  return { authorize, isAdministrator, isLogin, logout }
+  return { authorize, isAdministrator, isLogin, logout, loginCallback }
 }

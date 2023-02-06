@@ -9,6 +9,7 @@ export default () => {
     if (expire) {
       cache.expire = new Date().getTime() + expire * 1000
     }
+    // console.log(cache)
     localStorage.setItem(key, JSON.stringify(cache))
   }
 
